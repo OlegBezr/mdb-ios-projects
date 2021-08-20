@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A3E0B0525B647FC00345370 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3E0B0425B647FC00345370 /* Utils.swift */; };
+		1A3E0B0525B647FC00345370 /* QuestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3E0B0425B647FC00345370 /* QuestionProvider.swift */; };
 		1A3E0B0825B65F9A00345370 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A3E0B0725B65F9A00345370 /* Main.storyboard */; };
 		1A3E0B0B25B6638A00345370 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3E0B0A25B6638A00345370 /* MainVC.swift */; };
 		1A3E0B0F25B66B6000345370 /* StatsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3E0B0E25B66B6000345370 /* StatsVC.swift */; };
@@ -19,7 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1A3E0B0425B647FC00345370 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		1A3E0B0425B647FC00345370 /* QuestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionProvider.swift; sourceTree = "<group>"; };
 		1A3E0B0725B65F9A00345370 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		1A3E0B0A25B6638A00345370 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		1A3E0B0E25B66B6000345370 /* StatsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVC.swift; sourceTree = "<group>"; };
@@ -53,6 +53,24 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		1A1AC5DB26CF14330080E11B /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				1A4309E925B644D8007C0DBA /* AppDelegate.swift */,
+				1A4309EB25B644D8007C0DBA /* SceneDelegate.swift */,
+				1A4309F725B644D9007C0DBA /* Info.plist */,
+			);
+			path = "Support Files";
+			sourceTree = "<group>";
+		};
+		1A1AC5DC26CF28B50080E11B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1A3E0B0425B647FC00345370 /* QuestionProvider.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		1A4309DD25B644D8007C0DBA = {
 			isa = PBXGroup;
 			children = (
@@ -72,13 +90,11 @@
 		1A4309E825B644D8007C0DBA /* Meet the Members */ = {
 			isa = PBXGroup;
 			children = (
+				1A1AC5DC26CF28B50080E11B /* Models */,
+				1A1AC5DB26CF14330080E11B /* Support Files */,
 				1A1AC5DA26CF13CC0080E11B /* Controllers */,
-				1A4309E925B644D8007C0DBA /* AppDelegate.swift */,
-				1A4309EB25B644D8007C0DBA /* SceneDelegate.swift */,
 				1A4309F225B644D9007C0DBA /* Assets.xcassets */,
 				1A4309F425B644D9007C0DBA /* LaunchScreen.storyboard */,
-				1A4309F725B644D9007C0DBA /* Info.plist */,
-				1A3E0B0425B647FC00345370 /* Utils.swift */,
 				1A3E0B0725B65F9A00345370 /* Main.storyboard */,
 			);
 			path = "Meet the Members";
@@ -159,7 +175,7 @@
 				1A3E0B0F25B66B6000345370 /* StatsVC.swift in Sources */,
 				1A4309EA25B644D8007C0DBA /* AppDelegate.swift in Sources */,
 				1A4309EC25B644D8007C0DBA /* SceneDelegate.swift in Sources */,
-				1A3E0B0525B647FC00345370 /* Utils.swift in Sources */,
+				1A3E0B0525B647FC00345370 /* QuestionProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

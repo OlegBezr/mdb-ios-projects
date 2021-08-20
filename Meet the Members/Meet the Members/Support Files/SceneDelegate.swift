@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  Meet the Member
+//  Meet the Members
 //
 //  Created by Michael Lin on 1/18/21.
 //
@@ -11,19 +11,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
         // MARK: STEP 4: Setup entry point
-        // Just read the code. You probably won't understand what it means, and that's ok. Just keep in mind what it does:
-        // Makes StartVC the initial VC of our app. After that, use ⌘+r to run the app.
-        // You should see the StartVC that you created in step 1, 2, and 3.
-        // Try tapping the button to see if you can go the MainVC (there's nothing there yet, but we will fix that in a moment)
+        // Action Items:
+        // - Read the code. You might not understand it, so here's what it does
+        //   and why we do it:
+        //      Usually, the initial view controller is initialized by IB.
+        //      But because we are not using IB for this project, we need to
+        //      manually do the initialization in code. You can try to remove
+        //      the five lines and you will see a runtime error about entry point
+        //      not set.
+        
+        //      This delegate method is called every time the App is launched.
+        //      So we will use it to initialize a `StartVC` and assign it to the
+        //      root view controller. This effectively makes `StartVC` our
+        //      initial view controller.
         //
-        // Programmatically bypass storyboard, make StartVC the entry point
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.windowScene = windowScene
