@@ -12,6 +12,7 @@ class MainVC: UIViewController {
     
     // Create a property for our timer, we will initialize it in viewDidLoad
     var timer: Timer?
+    var question: QuestionProvider.Question?
     
     // MARK: STEP 7: UI Customization
     // Action Items:
@@ -33,6 +34,12 @@ class MainVC: UIViewController {
 
             // Tag the button its index
             button.tag = index
+            button.backgroundColor = .systemGreen.withAlphaComponent(0.5)
+            button.titleEdgeInsets = UIEdgeInsets.init(
+                top: 0, left: 3, bottom: 0, right: 3
+            )
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
+            button.setTitleColor(.darkGray, for: .normal)
             
             // MARK: >> Your Code Here <<
             
@@ -56,6 +63,7 @@ class MainVC: UIViewController {
         
         // Create a timer that calls timerCallback() every one second
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
+        getNextQuestion()
         
         // MARK: STEP 6: Adding Subviews and Constraints
         // Action Items:
@@ -72,15 +80,81 @@ class MainVC: UIViewController {
         //
         // modalPresentationStyle = .fullScreen
         
-        // MARK: >> Your Code Here <<
+        view.addSubview(imageView);
+        for i in 0...3 {
+            view.addSubview(buttons[i]);
+        }
         
-        getNextQuestion()
+        NSLayoutConstraint.activate([
+            imageView.topAnchor.constraint(
+                equalTo: view.topAnchor,
+                constant: 50
+            ),
+            imageView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            imageView.heightAnchor.constraint(
+                lessThanOrEqualToConstant: view.bounds.width - 20
+            ),
+            imageView.heightAnchor.constraint(
+                equalTo: imageView.widthAnchor,
+                multiplier: (imageView.image?.size.height ?? 1) / (imageView.image?.size.width ?? 1)
+            ),
+            buttons[0].topAnchor.constraint(
+                equalTo: view.centerYAnchor,
+                constant: 100
+            ),
+            buttons[1].topAnchor.constraint(
+                equalTo: buttons[0].topAnchor
+            ),
+            buttons[0].trailingAnchor.constraint(
+                equalTo: view.centerXAnchor,
+                constant: -20
+            ),
+            buttons[1].leadingAnchor.constraint(
+                equalTo: view.centerXAnchor,
+                constant: 20
+            ),
+            buttons[2].topAnchor.constraint(
+                equalTo: buttons[0].bottomAnchor,
+                constant: 30
+            ),
+            buttons[3].topAnchor.constraint(
+                equalTo: buttons[2].topAnchor
+            ),
+            buttons[2].trailingAnchor.constraint(
+                equalTo: view.centerXAnchor,
+                constant: -20
+            ),
+            buttons[3].leadingAnchor.constraint(
+                equalTo: view.centerXAnchor,
+                constant: 20
+            ),
+        ] + buttons.map({ button in
+                return button.widthAnchor.constraint(
+                    equalToConstant: view.bounds.width / 2 - 50
+                )
+            }) + buttons.map({ button in
+                return button.heightAnchor.constraint(
+                    equalToConstant: 50
+                )
+            })
+        )
+        
+        // MARK: >> Your Code Here <<
         
         // MARK: STEP 9: Bind Callbacks to the Buttons
         // Action Items:
         // - Bind the `didTapAnswer(_:)` function to the buttons.
         
         // MARK: >> Your Code Here <<
+        buttons.forEach { button in
+            button.addTarget(
+                self,
+                action: #selector(didTapAnswer(_:)),
+                for: .touchUpInside
+            )
+        }
         
         
         // MARK: STEP 10: Stats Button
@@ -99,6 +173,15 @@ class MainVC: UIViewController {
         // MARK: >> Your Code Here <<
     }
     
+    override func viewDidLayoutSubviews() {
+        for i in 0...3 {
+            buttons[i].layer.cornerRadius = 10
+            buttons[i].clipsToBounds = true
+        }
+        imageView.layer.cornerRadius = 20
+        imageView.clipsToBounds = true
+    }
+    
     func getNextQuestion() {
         // MARK: STEP 5: Data Model
         // Action Items:
@@ -107,6 +190,16 @@ class MainVC: UIViewController {
         //   the question instance
         
         // MARK: >> Your Code Here <<
+        if let newQuestion = QuestionProvider.shared.nextQuestion() {
+            question = newQuestion
+            imageView.image = newQuestion.image
+            for i in 0...3 {
+                buttons[i].setTitle(newQuestion.choices[i], for: .normal)
+            }
+        }
+        else {
+            print("Error")
+        }
     }
     
     // MARK: STEP 8: Buttons and Timer Callback
@@ -131,8 +224,12 @@ class MainVC: UIViewController {
     }
     
     @objc func didTapAnswer(_ sender: UIButton) {
-        
-        // MARK: >> Your Code Here <<
+        if (sender.tag == question?.choices.firstIndex(of: question?.answer ?? "")) {
+            print("Right")
+        }
+        else {
+            print("Wrong")
+        }
     }
     
     @objc func didTapStats(_ sender: UIButton) {

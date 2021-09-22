@@ -25,7 +25,7 @@ class StartVC: UIViewController {
         // == UIColor.darkGray
         label.textColor = .darkGray
         
-        label.text = "Meet the Member"
+        label.text = "Meet the Members"
         
         // == NSTextAlignment(expected type).center
         label.textAlignment = .center
@@ -44,7 +44,7 @@ class StartVC: UIViewController {
         
         button.setTitle("Start", for: .normal)
         
-        button.setTitleColor(.blue, for: .normal)
+        button.setTitleColor(.darkGray, for: .normal)
         
         // MARK: STEP 1: UIButton Customization
         // Action Items:
@@ -57,6 +57,7 @@ class StartVC: UIViewController {
         // where you will find all the available APIs.
         
         // MARK: >> Your Code Here <<
+        button.backgroundColor = .systemGreen.withAlphaComponent(0.5);
         
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -85,6 +86,7 @@ class StartVC: UIViewController {
         // - Constraints can only be created in the same view hierarchy.
         //   So you have to add the view subview before creating constraints.
         view.addSubview(welcomeLabel)
+        view.addSubview(startButton)
         
         
         // And add the constraints
@@ -101,21 +103,34 @@ class StartVC: UIViewController {
         NSLayoutConstraint.activate([
             // You can use the view.topAnchor. But it's different, why?
             // https://developer.apple.com/documentation/uikit/uiview/positioning_content_relative_to_the_safe_area
-            welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
-            
-            // For your understanding, here's what it's saying:
-            //     welcomeLabel.leadingAnchor = view.leadingAnchor + 50
-            welcomeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            
-            //     welcomeLabel.trailingAnchor = view.trailingAnchor - 50
-            welcomeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)
+            welcomeLabel.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 100
+            ),
+            welcomeLabel.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: 50
+            ),
+            welcomeLabel.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -50
+            ),
+            startButton.bottomAnchor.constraint(
+                equalTo: view.bottomAnchor,
+                constant: -100
+            ),
+            startButton.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            startButton.widthAnchor.constraint(
+                equalToConstant: view.bounds.width / 5 * 3
+            ),
+            startButton.heightAnchor.constraint(
+                equalToConstant: 60
+            )
         ])
         
         // MARK: >> Your Code Here <<
-        
-        NSLayoutConstraint.activate([
-            // MARK: >> Your Code Here <<
-        ])
         
         
         // MARK: STEP 3: Adding Callbacks
@@ -135,12 +150,21 @@ class StartVC: UIViewController {
         //   need this when we want to expose a method or property to objective-c
         //   runtime. Since selector is an objective-c only feature, we will
         //   need it here.
-        startButton.addTarget(self, action: #selector(didTapStart(_:)), for: .touchUpInside)
+        startButton.addTarget(
+            self,
+            action: #selector(didTapStart(_:)),
+            for: .touchUpInside
+        )
+    }
+    
+    override func viewDidLayoutSubviews() {
+        startButton.layer.cornerRadius = startButton.bounds.height / 2
     }
     
     @objc func didTapStart(_ sender: UIButton) {
         // Initialize an instance of MainVC
         let vc = MainVC()
+        // vc.modalPresentationStyle = .fullScreen
         // Use the present function to modally present the MainVC
         present(vc, animated: true, completion: nil)
     }
