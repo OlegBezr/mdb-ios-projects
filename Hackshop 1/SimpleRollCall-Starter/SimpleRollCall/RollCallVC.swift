@@ -67,11 +67,27 @@ class RollCallVC: UIViewController {
         // Note that you can't just say button.image = something because
         // a button can have different states.
         // MARK: >> Your Code Here <<
+        button.setImage(
+            UIImage(systemName: "xmark"),
+            for: .normal
+        )
         
         // Create a symbol configuration to customize the appearance of our symbol image.
         // The procedure is described in this article:
         // https://developer.apple.com/documentation/uikit/uiimage/configuring_and_displaying_symbol_images_in_your_ui
         // MARK: >> Your Code Here <<
+        let config = UIImage.SymbolConfiguration(
+            pointSize: 22,
+            weight: .medium
+        )
+        button.setPreferredSymbolConfiguration(
+            config,
+            forImageIn: .normal
+        )
+        button.tintColor = .white
+        button.backgroundColor = .systemRed
+        button.layer.cornerRadius = 20
+        button.clipsToBounds = true
         
         // This changes the color of the image
         // MARK: >> Your Code Here <<
@@ -94,8 +110,21 @@ class RollCallVC: UIViewController {
     var presentButton: UIButton = {
         let button = UIButton()
         
+        button.setImage(
+            UIImage(systemName: "checkmark"),
+            for: .normal
+        )
         // MARK: >> Your Code Here <<
-        
+        let config = UIImage.SymbolConfiguration(
+            pointSize: 22,
+            weight: .medium
+        )
+        button.setPreferredSymbolConfiguration(
+            config,
+            forImageIn: .normal
+        )
+        button.tintColor = .white
+        button.backgroundColor = .systemGreen
         button.translatesAutoresizingMaskIntoConstraints = false
         
         button.tag = 0
@@ -109,6 +138,10 @@ class RollCallVC: UIViewController {
         view.backgroundColor = .black
         
         // Add the components into view hierarchy
+        
+        view.addSubview(nameLabel)
+        view.addSubview(presentButton)
+        view.addSubview(absentButton)
 
         // MARK: >> Your Code Here <<
         
@@ -147,6 +180,47 @@ class RollCallVC: UIViewController {
         //  -------------------
         // y
         NSLayoutConstraint.activate([
+            view.topAnchor.constraint(
+                equalTo: nameLabel.topAnchor,
+                constant: -200
+            ),
+            view.leadingAnchor.constraint(
+                equalTo: nameLabel.leadingAnchor,
+                constant: -50
+            ),
+            view.trailingAnchor.constraint(
+                equalTo: nameLabel.trailingAnchor,
+                constant: 50
+            ),
+            nameLabel.bottomAnchor.constraint(
+                equalTo: presentButton.topAnchor,
+                constant: -300
+            ),
+            view.leadingAnchor.constraint(
+                equalTo:presentButton.leadingAnchor,
+                constant:-80
+            ),
+            presentButton.trailingAnchor.constraint(
+                equalTo:view.centerXAnchor,
+                constant:-60
+            ),
+            presentButton.widthAnchor.constraint(
+                equalTo:presentButton.heightAnchor
+            ),
+            view.trailingAnchor.constraint(
+                equalTo:absentButton.trailingAnchor,
+                constant:80
+            ),
+            absentButton.leadingAnchor.constraint(
+                equalTo:view.centerXAnchor,
+                constant:60
+            ),
+            absentButton.widthAnchor.constraint(
+                equalTo:absentButton.heightAnchor
+            ),
+            absentButton.centerYAnchor.constraint(
+                equalTo: presentButton.centerYAnchor
+            )
             // MARK: >> Your Code Here <<
         ])
         
@@ -176,6 +250,10 @@ class RollCallVC: UIViewController {
         // `button.frame.width` wouldn't reflect the actual width of the view
         // (it's actually gonna be .zero again).
         // MARK: >> Your Code Here <<
+        presentButton.layer.cornerRadius = presentButton.bounds.width / 2
+        presentButton.clipsToBounds = true
+        absentButton.layer.cornerRadius = absentButton.bounds.width / 2
+        absentButton.clipsToBounds = true
     }
     
     @objc func didTapButton(_ sender: UIButton) {
