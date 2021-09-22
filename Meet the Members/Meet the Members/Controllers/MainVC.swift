@@ -9,20 +9,60 @@ import Foundation
 import UIKit
 
 class MainVC: UIViewController {
+    enum GameState {
+        case play
+        case pause
+        case answerCheck
+    }
     
-    // Create a property for our timer, we will initialize it in viewDidLoad
+    var gameStats = GameStats()
+    var oldGameState = GameState.play
+    var gameState = GameState.play
     var timer: Timer?
+    var timeForAnswerLeft = 5
+    var timeForAnswerCheckLeft = 2
     var question: QuestionProvider.Question?
+    var correctAnswer: Int {
+        get {
+            return question!.choices.firstIndex(of: question!.answer) ?? 0
+        }
+    }
     
-    // MARK: STEP 7: UI Customization
-    // Action Items:
-    // - Customize your imageView and buttons.
+    let timerView: UILabel = {
+        let view = UILabel()
+        view.text = "Time left: 5"
+        view.textColor = .darkGray
+        view.textAlignment = .center
+        view.font = UIFont.systemFont(ofSize: 20)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    let progressBarView: UIProgressView = {
+        let view = UIProgressView()
+        
+        view.progressTintColor = UIColor.systemBlue.withAlphaComponent(0.5)
+        view.progress = 1;
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    let scoreView: UILabel = {
+        let view = UILabel()
+        view.text = "Score: 0"
+        view.textColor = .darkGray
+        view.textAlignment = .center
+        view.font = UIFont.systemFont(ofSize: 20)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
     let imageView: UIImageView = {
         let view = UIImageView()
         
-        // MARK: >> Your Code Here <<
-    
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -40,69 +80,120 @@ class MainVC: UIViewController {
             )
             button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.setTitleColor(.darkGray, for: .normal)
-            
-            // MARK: >> Your Code Here <<
-            
             button.translatesAutoresizingMaskIntoConstraints = false
             
             return button
         }
-        
     }()
     
-    // MARK: STEP 10: Stats Button
-    // Action Items:
-    // - Follow the examples you've seen so far, create and
-    // configure a UIButton for presenting the StatsVC. Only the
-    // callback function `didTapStats(_:)` was written for you.
+    let pauseButton: UIButton = {
+        let button = UIButton()
+
+        button.backgroundColor = .systemGreen.withAlphaComponent(0.5)
+        button.titleEdgeInsets = UIEdgeInsets.init(
+            top: 0, left: 3, bottom: 0, right: 3
+        )
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.backgroundColor = .systemBlue.withAlphaComponent(0.5)
+        button.setTitleColor(.darkGray, for: .normal)
+        button.setTitle("Pause", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
     
-    // MARK: >> Your Code Here <<
+    let statsButton: UIButton = {
+        let button = UIButton()
+
+        button.backgroundColor = .systemGreen.withAlphaComponent(0.5)
+        button.titleEdgeInsets = UIEdgeInsets.init(
+            top: 0, left: 3, bottom: 0, right: 3
+        )
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.backgroundColor = .systemBlue.withAlphaComponent(0.5)
+        button.setTitleColor(.darkGray, for: .normal)
+        button.setTitle("Stats", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
     
     override func viewDidLoad() {
         view.backgroundColor = .white
         
         // Create a timer that calls timerCallback() every one second
-        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(
+            timeInterval: 1.0,
+            target: self,
+            selector: #selector(timerCallback),
+            userInfo: nil,
+            repeats: true
+        )
         getNextQuestion()
         
-        // MARK: STEP 6: Adding Subviews and Constraints
-        // Action Items:
-        // - Add imageViews and buttons to the root view.
-        // - Create and activate the layout constraints.
-        // - Run the App
-        
-        // Additional Information:
-        // If you don't like the default presentation style,
-        // you can change it to full screen too! However, in this
-        // case you will have to find a way to manually to call
-        // dismiss(animated: true, completion: nil) in order
-        // to go back.
-        //
         // modalPresentationStyle = .fullScreen
         
-        view.addSubview(imageView);
+        view.addSubview(imageView)
+        view.addSubview(scoreView)
+//        view.addSubview(timerView)
+        view.addSubview(progressBarView)
         for i in 0...3 {
-            view.addSubview(buttons[i]);
+            view.addSubview(buttons[i])
         }
+        view.addSubview(pauseButton)
+        view.addSubview(statsButton)
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(
                 equalTo: view.topAnchor,
-                constant: 50
+                constant: 10
             ),
             imageView.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
             ),
-            imageView.heightAnchor.constraint(
-                lessThanOrEqualToConstant: view.bounds.width - 20
+            imageView.bottomAnchor.constraint(
+                lessThanOrEqualTo: view.centerYAnchor
+            ),
+            imageView.widthAnchor.constraint(
+                equalToConstant: view.bounds.width - 10
             ),
             imageView.heightAnchor.constraint(
-                equalTo: imageView.widthAnchor,
-                multiplier: (imageView.image?.size.height ?? 1) / (imageView.image?.size.width ?? 1)
+                equalToConstant: view.bounds.height / 2 - 10
             ),
-            buttons[0].topAnchor.constraint(
+            scoreView.topAnchor.constraint(
                 equalTo: view.centerYAnchor,
-                constant: 100
+                constant: 20
+            ),
+            scoreView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+//            timerView.topAnchor.constraint(
+//                equalTo: scoreView.bottomAnchor,
+//                constant: 20
+//            ),
+//            timerView.centerXAnchor.constraint(
+//                equalTo: view.centerXAnchor
+//            ),
+            progressBarView.topAnchor.constraint(
+                equalTo: scoreView.bottomAnchor,
+                constant: 20
+            ),
+            progressBarView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            progressBarView.heightAnchor.constraint(
+                equalToConstant: 20
+            ),
+            progressBarView.widthAnchor.constraint(
+                equalToConstant: view.bounds.width - 40
+            ),
+//            buttons[0].topAnchor.constraint(
+//                equalTo: timerView.bottomAnchor,
+//                constant: 30
+//            ),
+            buttons[0].topAnchor.constraint(
+                equalTo: progressBarView.bottomAnchor,
+                constant: 30
             ),
             buttons[1].topAnchor.constraint(
                 equalTo: buttons[0].topAnchor
@@ -130,6 +221,34 @@ class MainVC: UIViewController {
                 equalTo: view.centerXAnchor,
                 constant: 20
             ),
+            pauseButton.topAnchor.constraint(
+                greaterThanOrEqualTo: buttons[2].bottomAnchor,
+                constant: 20
+            ),
+            pauseButton.bottomAnchor.constraint(
+                equalTo: view.bottomAnchor,
+                constant: -50
+            ),
+            pauseButton.trailingAnchor.constraint(
+                equalTo: view.centerXAnchor,
+                constant: -20
+            ),
+            statsButton.topAnchor.constraint(
+                equalTo: pauseButton.topAnchor
+            ),
+            statsButton.bottomAnchor.constraint(
+                equalTo: pauseButton.bottomAnchor
+            ),
+            statsButton.leadingAnchor.constraint(
+                equalTo: view.centerXAnchor,
+                constant: 20
+            ),
+            pauseButton.widthAnchor.constraint(
+                equalToConstant: view.bounds.width / 4
+            ),
+            statsButton.widthAnchor.constraint(
+                equalToConstant: view.bounds.width / 4
+            )
         ] + buttons.map({ button in
                 return button.widthAnchor.constraint(
                     equalToConstant: view.bounds.width / 2 - 50
@@ -141,13 +260,6 @@ class MainVC: UIViewController {
             })
         )
         
-        // MARK: >> Your Code Here <<
-        
-        // MARK: STEP 9: Bind Callbacks to the Buttons
-        // Action Items:
-        // - Bind the `didTapAnswer(_:)` function to the buttons.
-        
-        // MARK: >> Your Code Here <<
         buttons.forEach { button in
             button.addTarget(
                 self,
@@ -155,12 +267,16 @@ class MainVC: UIViewController {
                 for: .touchUpInside
             )
         }
-        
-        
-        // MARK: STEP 10: Stats Button
-        // See instructions above.
-        
-        // MARK: >> Your Code Here <<
+        pauseButton.addTarget(
+            self,
+            action: #selector(pauseCallback),
+            for: .touchUpInside
+        )
+        statsButton.addTarget(
+            self,
+            action: #selector(didTapStats(_:)),
+            for: .touchUpInside
+        )
     }
     
     // What's the difference between viewDidLoad() and
@@ -169,8 +285,13 @@ class MainVC: UIViewController {
         // MARK: STEP 13: Resume Game
         // Action Items:
         // - Reinstantiate timer when view appears
-        
-        // MARK: >> Your Code Here <<
+//        timer = Timer.scheduledTimer(
+//            timeInterval: 1.0,
+//            target: self,
+//            selector: #selector(timerCallback),
+//            userInfo: nil,
+//            repeats: true
+//        )
     }
     
     override func viewDidLayoutSubviews() {
@@ -179,78 +300,113 @@ class MainVC: UIViewController {
             buttons[i].clipsToBounds = true
         }
         imageView.layer.cornerRadius = 20
+        imageView.layer.borderWidth = 2
+        imageView.layer.borderColor = UIColor.darkGray.cgColor
         imageView.clipsToBounds = true
+        pauseButton.layer.cornerRadius = 5
+        statsButton.layer.cornerRadius = 5
     }
     
     func getNextQuestion() {
-        // MARK: STEP 5: Data Model
-        // Action Items:
-        // - Get a question instance from `QuestionProvider`
-        // - Configure the imageView and buttons with information from
-        //   the question instance
-        
-        // MARK: >> Your Code Here <<
+        hideAnswers()
         if let newQuestion = QuestionProvider.shared.nextQuestion() {
             question = newQuestion
             imageView.image = newQuestion.image
             for i in 0...3 {
                 buttons[i].setTitle(newQuestion.choices[i], for: .normal)
             }
+            timeForAnswerLeft = 5
+            progressBarView.setProgress(
+                 1, animated: false
+            )
+//            timerView.text = "Time left: \(timeForAnswerLeft)"
         }
         else {
             print("Error")
         }
     }
     
-    // MARK: STEP 8: Buttons and Timer Callback
-    // Action Items:
-    // - Complete the callback function for the 4 buttons.
-    // - Complete the callback function for the timer instance
-    //
-    // Additional Information:
-    // Take some time to plan what should be in here.
-    // The 4 buttons should share the same callback.
-    //
-    // Add instance properties and/or methods
-    // to the class if necessary. You may need to come back
-    // to this step later on.
-    //
-    // Hint:
-    // - The timer will fire every one second.
-    // - You can use `sender.tag` to identify which button is pressed.
+    @objc func pauseCallback() {
+        if (gameState != GameState.pause) {
+            oldGameState = gameState
+            gameState = GameState.pause
+            pauseButton.setTitle("Resume", for: .normal)
+        }
+        else {
+            gameState = oldGameState
+            pauseButton.setTitle("Pause", for: .normal)
+        }
+    }
+    
     @objc func timerCallback() {
-        
-        // MARK: >> Your Code Here <<
+        switch gameState {
+            case GameState.play:
+                timeForAnswerLeft -= 1
+                progressBarView.setProgress(
+                     Float(timeForAnswerLeft) / 5.0, animated: true
+                )
+//                timerView.text = "Time left: \(timeForAnswerLeft)"
+                if (timeForAnswerLeft == 0) {
+                    wrongAnswer()
+                    timeForAnswerLeft = 5
+                    showAnswers()
+                }
+            case GameState.answerCheck:
+                timeForAnswerCheckLeft -= 1
+                if (timeForAnswerCheckLeft == 0) {
+                    getNextQuestion()
+                    timeForAnswerCheckLeft = 2
+                    gameState = GameState.play
+                }
+            case GameState.pause:
+                break
+        }
     }
     
     @objc func didTapAnswer(_ sender: UIButton) {
-        if (sender.tag == question?.choices.firstIndex(of: question?.answer ?? "")) {
-            print("Right")
-        }
-        else {
-            print("Wrong")
+        if (gameState == GameState.play) {
+            showAnswers()
+            if (sender.tag != correctAnswer) {
+                wrongAnswer()
+                sender.backgroundColor = .systemRed.withAlphaComponent(0.5)
+            }
+            else {
+                gameStats.answers.append(true)
+                gameStats.score += 1
+                gameStats.currentStreak += 1
+                gameStats.bestStreak = max(gameStats.bestStreak, gameStats.currentStreak)
+            }
+            scoreView.text = "Score: \(gameStats.score)"
         }
     }
     
+    func wrongAnswer() {
+        gameStats.currentStreak = 0
+        gameStats.answers.append(false)
+    }
+    
+    func hideAnswers() {
+        buttons.forEach { button in
+            button.backgroundColor = .systemGreen.withAlphaComponent(0.5)
+        }
+    }
+    
+    func showAnswers() {
+        buttons.forEach { button in
+            button.backgroundColor = .systemGray.withAlphaComponent(0.5)
+        }
+        buttons[correctAnswer].backgroundColor = .systemGreen.withAlphaComponent(0.5)
+        gameState = GameState.answerCheck
+    }
+    
     @objc func didTapStats(_ sender: UIButton) {
+        let vc = StatsVC(gameStats: gameStats)
+        // timer?.invalidate()
+        if (gameState != GameState.pause) {
+            pauseCallback()
+        }
         
-        let vc = StatsVC(data: "Hello")
-        
-        vc.modalPresentationStyle = .fullScreen
-        
-        // MARK: STEP 11: Going to StatsVC
-        // When we are navigating between VCs (e.g MainVC -> StatsVC),
-        // we often need a mechanism for transferring data
-        // between view controllers. There are many ways to achieve
-        // this (initializer, delegate, notification center,
-        // combined, etc.). We will start with the easiest one today,
-        // which is custom initializer.
-        //
-        // Action Items:
-        // - Pause the game when stats button is tapped
-        // - Read the example in StatsVC.swift, and replace it with
-        //   your custom init for `StatsVC`
-        // - Update the call site here on line 139
+        // vc.modalPresentationStyle = .fullScreen
         
         present(vc, animated: true, completion: nil)
     }

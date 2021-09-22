@@ -8,34 +8,108 @@
 import UIKit
 
 class StatsVC: UIViewController {
+    let gameStats: GameStats
+    let played3orLess: Int
+    var correctAnswersOn3: Int = 0
     
-    // MARK: STEP 11: Going to StatsVC
-    // Read the instructions in MainVC.swift
+    let pageNameView: UILabel = {
+        let view = UILabel()
+        view.textColor = .darkGray
+        view.textAlignment = .center
+        view.font = .systemFont(ofSize: 27, weight: .medium)
+        view.text = "Stats"
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
-    let dataExample: String
+    let bestStreakView: UILabel = {
+        let view = UILabel()
+        view.textColor = .darkGray
+        view.textAlignment = .center
+        view.font = UIFont.systemFont(ofSize: 24)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
     
-    init(data: String) {
-        self.dataExample = data
-        // Delegate rest of the initialization to super class
-        // designated initializer.
+    let scoreView: UILabel = {
+        let view = UILabel()
+        view.textColor = .darkGray
+        view.textAlignment = .center
+        view.font = UIFont.systemFont(ofSize: 24)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    let last3ScoreView: UILabel = {
+        let view = UILabel()
+        view.textColor = .darkGray
+        view.textAlignment = .center
+        view.font = UIFont.systemFont(ofSize: 24)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
+    init(gameStats: GameStats) {
+        self.gameStats = gameStats
+        let ansCount = gameStats.answers.count
+        self.played3orLess = min(ansCount, 3)
+        
+        bestStreakView.text = "Best streak: \(gameStats.bestStreak)"
+        scoreView.text = "Total score: \(gameStats.score)/\(gameStats.answers.count)"
+        
         super.init(nibName: nil, bundle: nil)
+        
+        gameStats.answers[ansCount-played3orLess..<ansCount].forEach({ value in
+                correctAnswersOn3 += value ? 1:0
+            }
+        )
+        last3ScoreView.text = "Last answers: \(correctAnswersOn3)/\(played3orLess)"
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: >> Your Code Here <<
-    
-    // MARK: STEP 12: StatsVC UI
-    // Action Items:
-    // - Initialize the UI components, add subviews and constraints
-    
-    // MARK: >> Your Code Here <<
-    
     override func viewDidLoad() {
-        super.viewDidLoad()
+        view.backgroundColor = .white
+        view.addSubview(pageNameView)
+        view.addSubview(bestStreakView)
+        view.addSubview(scoreView)
+        view.addSubview(last3ScoreView)
         
-        // MARK: >> Your Code Here <<
+        NSLayoutConstraint.activate([
+            pageNameView.topAnchor.constraint(
+                equalTo: view.topAnchor,
+                constant: 20
+            ),
+            pageNameView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            scoreView.topAnchor.constraint(
+                equalTo: pageNameView.bottomAnchor,
+                constant: 40
+            ),
+            scoreView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            bestStreakView.topAnchor.constraint(
+                equalTo: scoreView.bottomAnchor,
+                constant: 30
+            ),
+            bestStreakView.centerXAnchor.constraint(
+                equalTo: scoreView.centerXAnchor
+            ),
+            last3ScoreView.topAnchor.constraint(
+                equalTo: bestStreakView.bottomAnchor,
+                constant: 30
+            ),
+            last3ScoreView.centerXAnchor.constraint(
+                equalTo: scoreView.centerXAnchor
+            ),
+        ])
     }
 }
