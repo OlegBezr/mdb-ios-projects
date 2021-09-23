@@ -54,7 +54,8 @@ class MainVC: UIViewController {
         view.text = "Score: 0"
         view.textColor = .darkGray
         view.textAlignment = .center
-        view.font = UIFont.systemFont(ofSize: 20)
+        view.isOpaque = false
+        view.font = .systemFont(ofSize: 20)
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -63,6 +64,8 @@ class MainVC: UIViewController {
     let imageView: UIImageView = {
         let view = UIImageView()
         
+        view.backgroundColor = .lightGray
+        view.contentMode = UIView.ContentMode.scaleAspectFit
         view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
@@ -134,9 +137,9 @@ class MainVC: UIViewController {
         // modalPresentationStyle = .fullScreen
         
         view.addSubview(imageView)
-        view.addSubview(scoreView)
 //        view.addSubview(timerView)
         view.addSubview(progressBarView)
+        view.addSubview(scoreView)
         for i in 0...3 {
             view.addSubview(buttons[i])
         }
@@ -158,11 +161,11 @@ class MainVC: UIViewController {
                 equalToConstant: view.bounds.width - 10
             ),
             imageView.heightAnchor.constraint(
-                equalToConstant: view.bounds.height / 2 - 10
+                equalToConstant: view.bounds.height / 2 - 50
             ),
             scoreView.topAnchor.constraint(
-                equalTo: view.centerYAnchor,
-                constant: 20
+                equalTo: imageView.bottomAnchor,
+                constant: 10
             ),
             scoreView.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
@@ -176,7 +179,7 @@ class MainVC: UIViewController {
 //            ),
             progressBarView.topAnchor.constraint(
                 equalTo: scoreView.bottomAnchor,
-                constant: 20
+                constant: 10
             ),
             progressBarView.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
@@ -222,12 +225,16 @@ class MainVC: UIViewController {
                 constant: 20
             ),
             pauseButton.topAnchor.constraint(
+                lessThanOrEqualTo: buttons[2].bottomAnchor,
+                constant: 50
+            ),
+            pauseButton.topAnchor.constraint(
                 greaterThanOrEqualTo: buttons[2].bottomAnchor,
                 constant: 20
             ),
             pauseButton.bottomAnchor.constraint(
                 equalTo: view.bottomAnchor,
-                constant: -50
+                constant: -40
             ),
             pauseButton.trailingAnchor.constraint(
                 equalTo: view.centerXAnchor,
@@ -301,7 +308,7 @@ class MainVC: UIViewController {
         }
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor.darkGray.cgColor
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.clipsToBounds = true
         pauseButton.layer.cornerRadius = 5
         statsButton.layer.cornerRadius = 5

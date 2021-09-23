@@ -39,6 +39,36 @@ class StartVC: UIViewController {
         return label
     }()
     
+    private let authorLabel: UILabel = {
+        let label = UILabel()
+        
+        // == UIColor.darkGray
+        label.textColor = .darkGray
+        
+        label.text = "by Oleg Bezrukavnikov"
+        
+        // == NSTextAlignment(expected type).center
+        label.textAlignment = .center
+        
+        // == UIFont.systemFont(ofSize: 27, UIFont.weight.medium)
+        label.font = .systemFont(ofSize: 24, weight: .medium)
+        
+        // Must have if you are using constraints.
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        return label
+    }()
+    
+    let imageView: UIImageView = {
+        let view = UIImageView()
+        
+        view.image = UIImage(named:"start_page_photo.jpeg")
+        view.contentMode = UIView.ContentMode.scaleAspectFit
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    }()
+    
     private let startButton: UIButton = {
         let button = UIButton()
         
@@ -87,6 +117,8 @@ class StartVC: UIViewController {
         //   So you have to add the view subview before creating constraints.
         view.addSubview(welcomeLabel)
         view.addSubview(startButton)
+        view.addSubview(authorLabel)
+        view.addSubview(imageView)
         
         
         // And add the constraints
@@ -115,9 +147,34 @@ class StartVC: UIViewController {
                 equalTo: view.trailingAnchor,
                 constant: -50
             ),
+            authorLabel.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            authorLabel.topAnchor.constraint(
+                equalTo: welcomeLabel.bottomAnchor,
+                constant: 50
+            ),
+            imageView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            imageView.topAnchor.constraint(
+                equalTo: authorLabel.bottomAnchor,
+                constant: 20
+            ),
+            imageView.heightAnchor.constraint(
+                equalToConstant: view.bounds.height / 2 - 100
+            ),
+            imageView.widthAnchor.constraint(
+                equalTo: imageView.heightAnchor,
+                multiplier: 3 / 4
+            ),
+            imageView.bottomAnchor.constraint(
+                lessThanOrEqualTo: view.bottomAnchor,
+                constant: -30
+            ),
             startButton.bottomAnchor.constraint(
                 equalTo: view.bottomAnchor,
-                constant: -100
+                constant: -80
             ),
             startButton.centerXAnchor.constraint(
                 equalTo: view.centerXAnchor
@@ -159,6 +216,8 @@ class StartVC: UIViewController {
     
     override func viewDidLayoutSubviews() {
         startButton.layer.cornerRadius = startButton.bounds.height / 2
+        imageView.layer.cornerRadius = 20
+        imageView.clipsToBounds = true
     }
     
     @objc func didTapStart(_ sender: UIButton) {
