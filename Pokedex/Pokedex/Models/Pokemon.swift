@@ -39,10 +39,6 @@ enum PokeType: String, CaseIterable {
 }
 
 class Pokemon: Decodable {
-    /* Note 2:
-       The image for each Pokemon is not provided, but a URL is. You should look up how to get an image from it's URL.
-    */
-     
     let name: String
     let id: Int
     let attack: Int
@@ -53,9 +49,9 @@ class Pokemon: Decodable {
     let speed: Int
     let total: Int
     let types: [PokeType]
-    let imageUrl: String
-    let imageUrlLarge: String
-    let imageUrlAnimated: String
+    let imageUrl: URL?
+    let imageUrlLarge: URL?
+    let imageUrlAnimated: URL?
     
     enum CodingKeys: String, CodingKey {
         case id = "national_number"
@@ -105,8 +101,8 @@ class Pokemon: Decodable {
         
         let imageContainer = try valueContainer.nestedContainer(keyedBy: ImageKeys.self, forKey: .images)
         
-        self.imageUrl = try imageContainer.decode(String.self, forKey: .normal)
-        self.imageUrlLarge = try imageContainer.decode(String.self, forKey: .large)
-        self.imageUrlAnimated = try imageContainer.decode(String.self, forKey: .animated)
+        self.imageUrl = URL(string: try imageContainer.decode(String.self, forKey: .normal))
+        self.imageUrlLarge = URL(string: try imageContainer.decode(String.self, forKey: .large))
+        self.imageUrlAnimated = URL(string: try imageContainer.decode(String.self, forKey: .animated))
     }
 }
