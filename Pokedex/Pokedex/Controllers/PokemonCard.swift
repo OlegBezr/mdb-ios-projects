@@ -47,7 +47,7 @@ class PokemonCard: UICollectionViewCell  {
         let iv = UIImageView()
         iv.tintColor = .white
         iv.contentMode = .scaleAspectFit
-        
+        iv.contentMode = UIView.ContentMode.scaleAspectFit
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
@@ -69,10 +69,10 @@ class PokemonCard: UICollectionViewCell  {
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: titleView.topAnchor, constant: -5),
-            imageView.heightAnchor.constraint(equalToConstant: 60),
+            imageView.heightAnchor.constraint(equalToConstant: frame.height * 2 / 3),
             titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            titleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            titleView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor)
         ])
     }
     

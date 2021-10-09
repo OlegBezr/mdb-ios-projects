@@ -13,8 +13,8 @@ class PokemonPreviewVC: UIViewController {
 
     override func viewDidLoad() {
         view.addSubview(imageView)
-        let width = 110
-        let height = 110
+        let width = 150
+        let height = 150
         preferredContentSize = CGSize(width: width, height: height)
     }
     
