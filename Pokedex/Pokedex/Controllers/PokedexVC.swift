@@ -1,19 +1,33 @@
+////
+////  ViewController.swift
+////  Pokedex
+////
+////  Created by Michael Lin on 2/18/21.
+////
 //
-//  ViewController.swift
-//  Pokedex
+//import UIKit
 //
-//  Created by Michael Lin on 2/18/21.
+//class PokedexVC: UIViewController {
+//    let pokemonCards: [PokemonCard]
 //
-
-import UIKit
-
-class PokedexVC: UIViewController {
-    
-    let pokemons = PokemonGenerator.shared.getPokemonArray()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-}
-
+//    init() {
+//        let pokemons = PokemonGenerator.shared.getPokemonArray()
+//        pokemonCards = {
+//            return pokemons.map { pokemon in
+//                let pokemonCard = PokemonCard(frame: <#CGRect#>, pokemon: pokemon)
+//                return pokemonCard
+//            }
+//        }()
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        // Do any additional setup after loading the view.
+//    }
+//}
+//
