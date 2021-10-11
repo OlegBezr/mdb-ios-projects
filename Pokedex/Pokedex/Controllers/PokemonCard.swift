@@ -7,20 +7,6 @@
 
 import UIKit
 
-extension UIImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
-    }
-}
-
 class PokemonCard: UICollectionViewCell  {
     static let reuseIdentifier: String = String(describing: PokemonCard.self)
     
@@ -47,15 +33,14 @@ class PokemonCard: UICollectionViewCell  {
         let iv = UIImageView()
         iv.tintColor = .white
         iv.contentMode = .scaleAspectFit
-        iv.contentMode = UIView.ContentMode.scaleAspectFit
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
 
     override init(frame: CGRect) {
-        if let defaultImage = UIImage(named: "pikachu") {
-            imageView.image = defaultImage
-        }
+//        if let defaultImage = UIImage(named: "pikachu") {
+//            imageView.image = defaultImage
+//        }
         super.init(frame: frame)
         
         backgroundColor = #colorLiteral(red: 0.09803921569, green: 0.1058823529, blue: 0.1098039216, alpha: 1)
@@ -68,11 +53,11 @@ class PokemonCard: UICollectionViewCell  {
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: titleView.topAnchor, constant: -5),
-            imageView.heightAnchor.constraint(equalToConstant: frame.height * 2 / 3),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -50),
+//            imageView.heightAnchor.constraint(equalToConstant: contentView.frame.height / 3),
             titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            titleView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor)
+            titleView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10)
         ])
     }
     

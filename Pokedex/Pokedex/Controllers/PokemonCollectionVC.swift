@@ -7,41 +7,170 @@
 
 import UIKit
 
-class PokemonCollectionVC: UIViewController, UICollectionViewDelegate, UISearchBarDelegate {
+class PokemonCollectionVC: UIViewController, UISearchBarDelegate {
     let searchController = UISearchController()
     let pokemonData = PokemonGenerator.shared.getPokemonArray().sorted { a, b in
         return a.name < b.name;
     }
-    var rowView = false
+    var filteredPokemonData = PokemonGenerator.shared.getPokemonArray().sorted { a, b in
+        return a.name < b.name;
+    }
+    var isInRowView = false
     var chosenPokemonSize = CGSize(width: 80, height: 130)
     let pokemonSizeGrid = CGSize(width: 80, height: 130)
     var pokemonSizeRow: CGSize?
-    let itemTextGrid = "Row view"
-    let itemTextRow = "Grid view"
-    var filteredPokemonData = PokemonGenerator.shared.getPokemonArray()
+    let rowViewText = "Row view"
+    let gridViewText = "Grid view"
     
-    let collectionView: UICollectionView = {
+    var moreFiltersText = "More filters"
+    var lessFiltersText = "Less filters"
+    var moreFilters = false
+    var pokemonGridTopOffset = 0.0
+    var filtersHeight = 130.0
+    var chosenTypes: Set<PokeType> = []
+    var searchText = ""
+    
+    private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-//        layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 30
         layout.minimumInteritemSpacing = 30
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.allowsSelection = true
+        collectionView.allowsMultipleSelection = false
         collectionView.register(PokemonCard.self, forCellWithReuseIdentifier: PokemonCard.reuseIdentifier)
         return collectionView
     }()
     
-//    let textView: UILabel = {
-//        var label = UILabel()
-//        label.text = "CHECK"
-//        label.textColor = .white
-//        return label
-//    }()
+    private let noResultsLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 28)
+        label.textColor = .white
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.text = "No results found 😞"
+        label.isHidden = true
+        label.isEnabled = true
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let verticalStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.distribution = .fillEqually
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.isHidden = true
+        return stack
+    }()
+    
+    private let horizontalStackViews: [UIStackView] = {
+        return (0..<4).map { index in
+            let stack = UIStackView()
+            stack.axis = .horizontal
+            stack.alignment = .leading
+            stack.distribution = .fillEqually
+            stack.spacing = 5
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            return stack
+        }
+    }()
+    
+    let filters: [UIButton] = {
+        let pokeTypes = PokeType.allCases
+        return (0..<pokeTypes.count).map { index in
+            let button = UIButton()
+            button.tag = index
+            button.backgroundColor = .darkGray
+            button.titleEdgeInsets = UIEdgeInsets.init(
+                top: 0, left: 3, bottom: 0, right: 3
+            )
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
+            button.setTitleColor(.white, for: .normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.setTitle(PokeType.allCases[index].rawValue, for: .normal)
+        
+            return button
+        }
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // 1B 1D 1F
-//        overrideUserInterfaceStyle = .dark
-        pokemonSizeRow = CGSize(width: /*view.bounds.width / 2*/ 130, height: view.bounds.height / 2)
+        setNavigationbar()
+        setFilters()
+        pokemonSizeRow = CGSize(width: 200, height: view.bounds.height / 3)
+        
+        view.backgroundColor = #colorLiteral(red: 0.09803921569, green: 0.1058823529, blue: 0.1098039216, alpha: 1)
+        view.addSubview(verticalStackView)
+        view.addSubview(collectionView)
+        view.addSubview(noResultsLabel)
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        filters.forEach { button in
+            button.addTarget(
+                self,
+                action: #selector(pokeFilterTapped(_:)),
+                for: .touchUpInside
+            )
+        }
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 0
+            ),
+            noResultsLabel.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            noResultsLabel.centerYAnchor.constraint(
+                equalTo: collectionView.centerYAnchor
+            ),
+//            noResultsLabel.heightAnchor.constraint(
+//                equalToConstant: 50.0
+//            ),
+//            noResultsLabel.widthAnchor.constraint(equalToConstant: 200.0),
+            verticalStackView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 0
+            ),
+            verticalStackView.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            verticalStackView.heightAnchor.constraint(
+                equalToConstant: filtersHeight
+            )
+        ] + horizontalStackViews.map { stack in
+            stack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        })
+    }
+    
+    override func viewDidLayoutSubviews() {
+        // USE safeArea bottom?
+        collectionView.frame = view.bounds.inset(
+            by: UIEdgeInsets(top: view.safeAreaInsets.top + pokemonGridTopOffset, left: 20, bottom: 0, right: 20)
+        )
+        filters.forEach { button in
+            button.layer.cornerRadius = button.frame.height / 4
+            button.clipsToBounds = true
+        }
+    }
+    
+    func setFilters() {
+        for i in 0..<filters.count {
+            horizontalStackViews[i / 5].addArrangedSubview(filters[i])
+        }
+        for i in 0..<horizontalStackViews.count {
+            verticalStackView.addArrangedSubview(horizontalStackViews[i])
+        }
+    }
+    
+    func setNavigationbar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white.withAlphaComponent(0.95)]
         navigationController?.navigationBar.barStyle = .black
@@ -53,30 +182,59 @@ class PokemonCollectionVC: UIViewController, UICollectionViewDelegate, UISearchB
         searchController.searchBar.delegate = self
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Row view", style: .plain, target: self, action: #selector(changeView(sender:)))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "More filters")
-        view.backgroundColor = #colorLiteral(red: 0.09803921569, green: 0.1058823529, blue: 0.1098039216, alpha: 1)
-        
-        view.addSubview(collectionView)
-        collectionView.frame = view.bounds.inset(by: UIEdgeInsets(top: 100, left: 30, bottom: 0, right: 30))
-        collectionView.backgroundColor = .clear
-        
-        collectionView.allowsSelection = true
-        collectionView.allowsMultipleSelection = false
-        
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: rowViewText, style: .plain, target: self, action: #selector(changeView(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: moreFiltersText, style: .plain, target: self, action: #selector(changeFilters(_:)))
     }
     
-    @objc func changeFilters(sender: UIBarButtonItem) {
-//        view.addSubview(textView)
-//        NSLayoutConstraint.activate([textView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50)])
+    @objc func changeFilters(_ sender: UIBarButtonItem) {
+        pokemonGridTopOffset = 0
+        if (!moreFilters) {
+            pokemonGridTopOffset = filtersHeight + 10
+        }
+        collectionView.frame = view.bounds.inset(
+            by: UIEdgeInsets(
+                top: view.safeAreaInsets.top + pokemonGridTopOffset,
+                left: 20,
+                bottom: 0,
+                right: 20
+            )
+        )
+        moreFilters = !moreFilters
+        navigationItem.rightBarButtonItem?.title = moreFilters ? lessFiltersText
+            : moreFiltersText
+        chosenTypes.removeAll()
+        verticalStackView.isHidden = !moreFilters
+        changeFilterButtonsColor()
+        filterData()
+    }
+    
+    @objc func pokeFilterTapped(_ sender: UIButton) {
+        let pokeTypeIndex = sender.tag
+        let pokeType = PokeType.allCases[pokeTypeIndex]
+        if chosenTypes.contains(pokeType) {
+            chosenTypes.remove(pokeType)
+        } else {
+            chosenTypes.insert(pokeType)
+        }
+        
+        changeFilterButtonsColor()
+        filterData()
+    }
+    
+    func changeFilterButtonsColor() {
+        filters.forEach { button in
+            let pokeTypeIndex = button.tag
+            let pokeType = PokeType.allCases[pokeTypeIndex]
+            let chosen = chosenTypes.contains(pokeType)
+            let color = chosen ? UIColor.systemBlue: UIColor.darkGray
+            button.backgroundColor = color
+        }
     }
     
     @objc func changeView(sender: UIBarButtonItem) {
-        if rowView {
-            rowView = false
-            navigationItem.leftBarButtonItem?.title = itemTextGrid
+        if isInRowView {
+            isInRowView = false
+            navigationItem.leftBarButtonItem?.title = rowViewText
             chosenPokemonSize = pokemonSizeGrid
             if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
                 layout.scrollDirection = .vertical
@@ -84,8 +242,8 @@ class PokemonCollectionVC: UIViewController, UICollectionViewDelegate, UISearchB
             }
             collectionView.reloadData()
         } else {
-            rowView = true
-            navigationItem.leftBarButtonItem?.title = itemTextRow
+            isInRowView = true
+            navigationItem.leftBarButtonItem?.title = gridViewText
             chosenPokemonSize = pokemonSizeRow ?? pokemonSizeGrid
             if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
                 layout.scrollDirection = .horizontal
@@ -95,19 +253,37 @@ class PokemonCollectionVC: UIViewController, UICollectionViewDelegate, UISearchB
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        filteredPokemonData = pokemonData
-        collectionView.reloadData()
+        self.searchText = ""
+        filterData()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredPokemonData = []
-        
-        for pokemon in pokemonData {
-            if pokemon.name.lowercased().starts(with: searchText.lowercased()) {
-                filteredPokemonData.append(pokemon)
+        self.searchText = searchText
+        filterData()
+    }
+    
+    func filterData() {
+        if (moreFilters && !chosenTypes.isEmpty) {
+            filteredPokemonData = pokemonData.filter { pokemon in
+                var check = true
+                chosenTypes.forEach { chosenType in
+                    if !pokemon.types.contains(chosenType) {
+                        check = false
+                    }
+                }
+                return check
             }
+        } else {
+            filteredPokemonData = pokemonData
         }
         
+        filteredPokemonData = filteredPokemonData.filter { pokemon in
+            pokemon.name.lowercased().starts(with: searchText.lowercased())
+        }
+        noResultsLabel.isHidden = true
+        if filteredPokemonData.isEmpty {
+            noResultsLabel.isHidden = false
+        }
         collectionView.reloadData()
     }
 }
@@ -130,19 +306,20 @@ extension PokemonCollectionVC: UICollectionViewDelegateFlowLayout {
         return chosenPokemonSize
     }
     
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let pokemon = filteredPokemonData[indexPath.item]
-        
-        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: {
-            return PokemonPreviewVC(pokemon: pokemon)
-        }) { _ in
-            let okItem = UIAction(title: "OK", image: UIImage(systemName: "arrow.down.right.and.arrow.up.left")) { _ in }
-            return UIMenu(title: "", image: nil, identifier: nil, children: [okItem])
-        }
-    }
+//    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+//        let pokemon = filteredPokemonData[indexPath.item]
+//
+//        return UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: {
+//            return PokemonPreviewVC(pokemon: pokemon)
+//        }) { _ in
+//            let okItem = UIAction(title: "OK", image: UIImage(systemName: "arrow.down.right.and.arrow.up.left")) { _ in }
+//            return UIMenu(title: "", image: nil, identifier: nil, children: [okItem])
+//        }
+//    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let pokemon = filteredPokemonData[indexPath.item]
-        print("Selected \(pokemon.name)")
+        let vc = PokemonVC(pokemon: pokemon)
+        present(vc, animated: true, completion: nil)
     }
 }
