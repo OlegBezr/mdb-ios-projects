@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1ADC5841271249AB0067693B"
-               BuildableName = "MDB Social No Starter.app"
+               BuildableName = "MDB Social.app"
                BlueprintName = "MDB Social"
                ReferencedContainer = "container:MDB Social.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1ADC5841271249AB0067693B"
-            BuildableName = "MDB Social No Starter.app"
+            BuildableName = "MDB Social.app"
             BlueprintName = "MDB Social"
             ReferencedContainer = "container:MDB Social.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1ADC5841271249AB0067693B"
-            BuildableName = "MDB Social No Starter.app"
+            BuildableName = "MDB Social.app"
             BlueprintName = "MDB Social"
             ReferencedContainer = "container:MDB Social.xcodeproj">
          </BuildableReference>
