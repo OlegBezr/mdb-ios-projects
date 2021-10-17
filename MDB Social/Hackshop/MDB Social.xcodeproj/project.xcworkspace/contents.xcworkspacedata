@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/miclin/Projects/MDB-iOS-TP/MDB Social No Starter/MDB Social.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

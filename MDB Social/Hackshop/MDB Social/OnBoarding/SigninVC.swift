@@ -146,33 +146,7 @@ class SigninVC: UIViewController {
             return
         }
         
-        signinButton.showLoading()
-        SOCAuthManager.shared.signIn(withEmail: email, password: password) { [weak self] result in
-            guard let self = self else { return }
-            
-            defer {
-                self.signinButton.hideLoading()
-            }
-            
-            switch result {
-            case .success(let _):
-                guard let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first else { return }
-                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()
-                window.rootViewController = vc
-                let options: UIView.AnimationOptions = .transitionCrossDissolve
-                let duration: TimeInterval = 0.3
-                UIView.transition(with: window, duration: duration, options: options, animations: {}, completion: nil)
-            case .failure(let error):
-                switch error {
-                case .userNotFound:
-                    self.showErrorBanner(withTitle: "User not found", subtitle: "Please provide an email")
-                case .wrongPassword:
-                    self.showErrorBanner(withTitle: "User not found", subtitle: "Please provide an email")
-                default:
-                    self.showErrorBanner(withTitle: "User not found", subtitle: "Please provide an email")
-                }
-            }
-        }
+        /* TODO: Hackshop */
     }
     
     @objc private func didTapSignUp(_ sender: UIButton) {

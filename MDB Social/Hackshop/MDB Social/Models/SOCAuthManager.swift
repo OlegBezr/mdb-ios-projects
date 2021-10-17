@@ -40,30 +40,7 @@ class SOCAuthManager {
     func signIn(withEmail email: String, password: String,
                 completion: ((Result<SOCUser, SignInErrors>)->Void)?) {
         
-        auth.signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            if let error = error {
-                let nsError = error as NSError
-                let errorCode = FirebaseAuth.AuthErrorCode(rawValue: nsError.code)
-                
-                switch errorCode {
-                case .wrongPassword:
-                    completion?(.failure(.wrongPassword))
-                case .userNotFound:
-                    completion?(.failure(.userNotFound))
-                case .invalidEmail:
-                    completion?(.failure(.invalidEmail))
-                default:
-                    completion?(.failure(.unspecified))
-                }
-                return
-            }
-            guard let authResult = authResult else {
-                completion?(.failure(.internalError))
-                return
-            }
-            
-            self?.linkUser(withuid: authResult.user.uid, completion: completion)
-        }
+        /* TODO: Hackshop */
     }
     
     /* TODO: Firebase sign up handler, add user to firestore */
@@ -83,19 +60,7 @@ class SOCAuthManager {
     private func linkUser(withuid uid: String,
                           completion: ((Result<SOCUser, SignInErrors>)->Void)?) {
         
-        userListener = db.collection("users").document(uid).addSnapshotListener { [weak self] docSnapshot, error in
-            guard let document = docSnapshot else {
-                completion?(.failure(.errorFetchingUserDoc))
-                return
-            }
-            guard let user = try? document.data(as: SOCUser.self) else {
-                completion?(.failure(.errorDecodingUserDoc))
-                return
-            }
-            
-            self?.currentUser = user
-            completion?(.success(user))
-        }
+        /* TODO: Hackshop */
     }
     
     private func unlinkCurrentUser() {

@@ -15,21 +15,11 @@ class FIRDatabaseRequest {
     let db = Firestore.firestore()
     
     func setUser(_ user: SOCUser, completion: (()->Void)?) {
-        guard let uid = user.uid else { return }
-        do {
-            try db.collection("users").document(uid).setData(from: user)
-            completion?()
-        }
-        catch { }
+        /* TODO: Hackshop */
     }
     
     func setEvent(_ event: SOCEvent, completion: (()->Void)?) {
-        guard let id = event.id else { return }
-        
-        do {
-            try db.collection("events").document(id).setData(from: event)
-            completion?()
-        } catch { }
+        /* TODO: Hackshop */
     }
     
     /* TODO: Events getter */
