@@ -74,7 +74,7 @@ class StartSignupVC: UIViewController {
         return actionLabel
     }()
     
-    private let contentEdgeInset = UIEdgeInsets(top: 120, left: 40, bottom: 30, right: 40)
+    private var contentEdgeInset = UIEdgeInsets(top: 120, left: 40, bottom: 30, right: 40)
     
     private let nextButtonHeight: CGFloat = 44.0
 
@@ -82,6 +82,7 @@ class StartSignupVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        contentEdgeInset.top = view.bounds.height / 10
         hideKeyboardWhenTappedAround()
         view.backgroundColor = .background
         
