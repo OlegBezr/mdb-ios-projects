@@ -32,5 +32,29 @@ class FIRDatabaseRequest {
         } catch { }
     }
     
-    /* TODO: Events getter */
+    func getEvents(completion: (([SOCEvent])->Void)?) {
+        var events = [SOCEvent]()
+        let query = db.collection("events")
+        
+        query.getDocuments { snapshot, error in
+            for doc in snapshot!.documents {
+                do {
+                    let event = try doc.data(as: SOCEvent.self)
+                    events.append(event!)
+                } catch {}
+            }
+            completion?(events)
+        }
+    }
+    
+    func getUserById(userId: SOCUserID, completion: ((SOCUser)->Void)?) {
+        let query = db.collection("users").document(userId)
+        
+        query.getDocument { snapshot, error in
+            do {
+                let user = try snapshot?.data(as: SOCUser.self)
+                completion?(user!)
+            } catch {}
+        }
+    }
 }

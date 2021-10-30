@@ -34,6 +34,8 @@
 		1AFB4D8A271C23D9006621E9 /* Auth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1AFB4D89271C23D9006621E9 /* Auth.storyboard */; };
 		AA54B70F272CDA6C008F5A0D /* SignupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA54B70E272CDA6C008F5A0D /* SignupVC.swift */; };
 		AA54B711272CE053008F5A0D /* StartSignupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA54B710272CE053008F5A0D /* StartSignupVC.swift */; };
+		AA54B713272D3602008F5A0D /* SOCEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA54B712272D3601008F5A0D /* SOCEventCell.swift */; };
+		AA54B715272D36E5008F5A0D /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA54B714272D36E5008F5A0D /* ImageExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,8 @@
 		1AFB4D89271C23D9006621E9 /* Auth.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Auth.storyboard; sourceTree = "<group>"; };
 		AA54B70E272CDA6C008F5A0D /* SignupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupVC.swift; sourceTree = "<group>"; };
 		AA54B710272CE053008F5A0D /* StartSignupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartSignupVC.swift; sourceTree = "<group>"; };
+		AA54B712272D3601008F5A0D /* SOCEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOCEventCell.swift; sourceTree = "<group>"; };
+		AA54B714272D36E5008F5A0D /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +141,7 @@
 				1ADC58692712504F0067693B /* SOCEvent.swift */,
 				1ADC586B271250B50067693B /* SOCAuthManager.swift */,
 				1ADC586D271253E90067693B /* SOCDBRequest.swift */,
+				AA54B714272D36E5008F5A0D /* ImageExtensions.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -169,6 +174,7 @@
 			children = (
 				1AFB4D85271C22FD006621E9 /* FeedVC.swift */,
 				1AFB4D87271C2327006621E9 /* FeedNavigationVC.swift */,
+				AA54B712272D3601008F5A0D /* SOCEventCell.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -267,6 +273,8 @@
 				1ADC586E271253E90067693B /* SOCDBRequest.swift in Sources */,
 				1ADC5879271255460067693B /* SigninVC.swift in Sources */,
 				AA54B70F272CDA6C008F5A0D /* SignupVC.swift in Sources */,
+				AA54B715272D36E5008F5A0D /* ImageExtensions.swift in Sources */,
+				AA54B713272D3602008F5A0D /* SOCEventCell.swift in Sources */,
 				1ADC586A271250500067693B /* SOCEvent.swift in Sources */,
 				1AFB4D86271C22FD006621E9 /* FeedVC.swift in Sources */,
 				1ADC5846271249AB0067693B /* AppDelegate.swift in Sources */,
