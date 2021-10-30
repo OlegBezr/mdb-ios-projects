@@ -32,6 +32,8 @@
 		1AFB4D86271C22FD006621E9 /* FeedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFB4D85271C22FD006621E9 /* FeedVC.swift */; };
 		1AFB4D88271C2327006621E9 /* FeedNavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFB4D87271C2327006621E9 /* FeedNavigationVC.swift */; };
 		1AFB4D8A271C23D9006621E9 /* Auth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1AFB4D89271C23D9006621E9 /* Auth.storyboard */; };
+		AA54B70F272CDA6C008F5A0D /* SignupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA54B70E272CDA6C008F5A0D /* SignupVC.swift */; };
+		AA54B711272CE053008F5A0D /* StartSignupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA54B710272CE053008F5A0D /* StartSignupVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +59,8 @@
 		1AFB4D85271C22FD006621E9 /* FeedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedVC.swift; sourceTree = "<group>"; };
 		1AFB4D87271C2327006621E9 /* FeedNavigationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedNavigationVC.swift; sourceTree = "<group>"; };
 		1AFB4D89271C23D9006621E9 /* Auth.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Auth.storyboard; sourceTree = "<group>"; };
+		AA54B70E272CDA6C008F5A0D /* SignupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupVC.swift; sourceTree = "<group>"; };
+		AA54B710272CE053008F5A0D /* StartSignupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartSignupVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +148,8 @@
 				1ADC5874271255460067693B /* HorizontalActionLabel.swift */,
 				1ADC5876271255460067693B /* LoadingButton.swift */,
 				1ADC5875271255460067693B /* SigninVC.swift */,
+				AA54B70E272CDA6C008F5A0D /* SignupVC.swift */,
+				AA54B710272CE053008F5A0D /* StartSignupVC.swift */,
 			);
 			path = OnBoarding;
 			sourceTree = "<group>";
@@ -251,6 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA54B711272CE053008F5A0D /* StartSignupVC.swift in Sources */,
 				1ADC5868271250090067693B /* SOCUser.swift in Sources */,
 				1ADC586C271250B50067693B /* SOCAuthManager.swift in Sources */,
 				1ADC587A271255460067693B /* LoadingButton.swift in Sources */,
@@ -259,6 +266,7 @@
 				1AFB4D88271C2327006621E9 /* FeedNavigationVC.swift in Sources */,
 				1ADC586E271253E90067693B /* SOCDBRequest.swift in Sources */,
 				1ADC5879271255460067693B /* SigninVC.swift in Sources */,
+				AA54B70F272CDA6C008F5A0D /* SignupVC.swift in Sources */,
 				1ADC586A271250500067693B /* SOCEvent.swift in Sources */,
 				1AFB4D86271C22FD006621E9 /* FeedVC.swift in Sources */,
 				1ADC5846271249AB0067693B /* AppDelegate.swift in Sources */,
@@ -415,7 +423,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "MDB Social No Starter/Info.plist";
+				INFOPLIST_FILE = "MDB Social/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MDB Social";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -443,7 +451,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "MDB Social No Starter/Info.plist";
+				INFOPLIST_FILE = "MDB Social/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MDB Social";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

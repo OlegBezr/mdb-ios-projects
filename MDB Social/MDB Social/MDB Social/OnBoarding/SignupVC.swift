@@ -1,14 +1,28 @@
 //
-//  SigninVC.swift
+//  SignupVC.swift
 //  MDB Social
 //
-//  Created by Michael Lin on 2/25/21.
+//  Created by Oleg Bezrukavnikov on 10/29/21.
 //
 
 import UIKit
 import NotificationBannerSwift
 
-class SigninVC: UIViewController {
+class SignupVC: UIViewController {
+    
+    private let name: String
+    private let username: String
+    
+    init(name: String, username: String) {
+        self.name = name
+        self.username = username
+        super.init(nibName: nil, bundle: nil)
+        titleLabel.text = String(format:"Welcome, %@", username)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private let stack: UIStackView = {
         let stack = UIStackView()
@@ -32,7 +46,7 @@ class SigninVC: UIViewController {
     
     private let titleSecLabel: UILabel = {
         let lbl = UILabel()
-        lbl.text = "Sign in to continue"
+        lbl.text = "Sign up to continue"
         lbl.textColor = .secondaryText
         lbl.font = .systemFont(ofSize: 17, weight: .medium)
         
@@ -54,10 +68,17 @@ class SigninVC: UIViewController {
         return tf
     }()
     
-    private let signinButton: LoadingButton = {
+    private let confirmPasswordTextField: AuthTextField = {
+        let tf = AuthTextField(title: "Confirm Password:")
+        tf.textField.isSecureTextEntry = true
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    
+    private let signupButton: LoadingButton = {
         let btn = LoadingButton()
         btn.layer.backgroundColor = UIColor.primary.cgColor
-        btn.setTitle("Sign In", for: .normal)
+        btn.setTitle("Sign Up", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         btn.isUserInteractionEnabled = true
@@ -66,10 +87,10 @@ class SigninVC: UIViewController {
         return btn
     }()
     
-    private let signUpActionLabel: HorizontalActionLabel = {
+    private let signInActionLabel: HorizontalActionLabel = {
         let actionLabel = HorizontalActionLabel(
-            label: "Don't have an account?",
-            buttonTitle: "Sign Up")
+            label: "",
+            buttonTitle: "Back")
         
         actionLabel.translatesAutoresizingMaskIntoConstraints = false
         return actionLabel
@@ -77,7 +98,7 @@ class SigninVC: UIViewController {
     
     private let contentEdgeInset = UIEdgeInsets(top: 120, left: 40, bottom: 30, right: 40)
     
-    private let signinButtonHeight: CGFloat = 44.0
+    private let signupButtonHeight: CGFloat = 44.0
 
     private var bannerQueue = NotificationBannerQueue(maxBannersOnScreenSimultaneously: 1)
 
@@ -105,6 +126,7 @@ class SigninVC: UIViewController {
         view.addSubview(stack)
         stack.addArrangedSubview(emailTextField)
         stack.addArrangedSubview(passwordTextField)
+        stack.addArrangedSubview(confirmPasswordTextField)
         
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor,
@@ -115,28 +137,28 @@ class SigninVC: UIViewController {
                                        constant: 60)
         ])
         
-        view.addSubview(signinButton)
+        view.addSubview(signupButton)
         NSLayoutConstraint.activate([
-            signinButton.leadingAnchor.constraint(equalTo: stack.leadingAnchor),
-            signinButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 30),
-            signinButton.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
-            signinButton.heightAnchor.constraint(equalToConstant: signinButtonHeight)
+            signupButton.leadingAnchor.constraint(equalTo: stack.leadingAnchor),
+            signupButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 30),
+            signupButton.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
+            signupButton.heightAnchor.constraint(equalToConstant: signupButtonHeight)
         ])
         
-        signinButton.layer.cornerRadius = signinButtonHeight / 2
+        signupButton.layer.cornerRadius = signupButtonHeight / 2
         
-        signinButton.addTarget(self, action: #selector(didTapSignIn(_:)), for: .touchUpInside)
+        signupButton.addTarget(self, action: #selector(didTapSignUp(_:)), for: .touchUpInside)
         
-        view.addSubview(signUpActionLabel)
+        view.addSubview(signInActionLabel)
         NSLayoutConstraint.activate([
-            signUpActionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            signUpActionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            signInActionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            signInActionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
         ])
         
-        signUpActionLabel.addTarget(self, action: #selector(didTapSignUp(_:)), for: .touchUpInside)
+        signInActionLabel.addTarget(self, action: #selector(didTapSignIn(_:)), for: .touchUpInside)
     }
 
-    @objc func didTapSignIn(_ sender: UIButton) {
+    @objc func didTapSignUp(_ sender: UIButton) {
         guard let email = emailTextField.text, email != "" else {
             showErrorBanner(withTitle: "Missing email", subtitle: "Please provide an email")
             return
@@ -146,12 +168,28 @@ class SigninVC: UIViewController {
             return
         }
         
-        signinButton.showLoading()
-        SOCAuthManager.shared.signIn(withEmail: email, password: password) { [weak self] result in
+        guard let confirmPassword = passwordTextField.text, confirmPassword != "" else {
+            return
+        }
+        
+        if (password != confirmPassword) {
+            showErrorBanner(withTitle: "Passwords do not match", subtitle: "Please correct the passwords")
+        }
+        
+        if (password.count < 6) {
+            showErrorBanner(withTitle: "Weak password", subtitle: "The password should be at least 6 symbols")
+        }
+        
+        signupButton.showLoading()
+        SOCAuthManager.shared.signUp(
+            withEmail: email,
+            password: password,
+            fullname: name,
+            username: username) { [weak self] result in
             guard let self = self else { return }
             
             defer {
-                self.signinButton.hideLoading()
+                self.signupButton.hideLoading()
             }
             
             switch result {
@@ -164,21 +202,17 @@ class SigninVC: UIViewController {
                 UIView.transition(with: window, duration: duration, options: options, animations: {}, completion: nil)
             case .failure(let error):
                 switch error {
-                case .userNotFound:
-                    self.showErrorBanner(withTitle: "User not found", subtitle: "Please provide an email")
-                case .wrongPassword:
-                    self.showErrorBanner(withTitle: "User not found", subtitle: "Please provide an email")
+                case .emailAlreadyInUse:
+                    self.showErrorBanner(withTitle: "Email already used", subtitle: "Please provide another email")
                 default:
-                    self.showErrorBanner(withTitle: "User not found", subtitle: "Please provide an email")
+                    self.showErrorBanner(withTitle: "Something went wrong", subtitle: "Try again later")
                 }
             }
         }
     }
     
-    @objc private func didTapSignUp(_ sender: UIButton) {
-        let vc = StartSignupVC()
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
+    @objc private func didTapSignIn(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
     }
     
     private func showErrorBanner(withTitle title: String, subtitle: String? = nil) {
@@ -198,3 +232,4 @@ class SigninVC: UIViewController {
                     shadowBlurRadius: 10)
     }
 }
+
