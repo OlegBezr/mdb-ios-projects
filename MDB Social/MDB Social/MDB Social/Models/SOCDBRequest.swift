@@ -50,6 +50,22 @@ class FIRDatabaseRequest {
         }
     }
     
+    func listenToEvents(completion: (([SOCEvent])->Void)?) {
+        let query = db.collection("events").addSnapshotListener { querySnapshot, error in
+            var events = [SOCEvent]()
+            if let documents = querySnapshot?.documents {
+                for doc in documents {
+                    do {
+                        if let event = try doc.data(as: SOCEvent.self) {
+                            events.append(event)
+                        }
+                    } catch {}
+                }
+            }
+            completion?(events)
+        }
+    }
+    
     func getUserById(userId: SOCUserID, completion: ((SOCUser)->Void)?) {
         let query = db.collection("users").document(userId)
         

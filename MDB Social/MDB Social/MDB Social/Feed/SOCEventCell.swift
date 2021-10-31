@@ -21,11 +21,10 @@ class SOCEventCell: UICollectionViewCell {
     
     var event: SOCEvent? {
         didSet {
+            imageView.image = nil
             if let event = event {
                 if let url = URL(string: event.photoURL) {
                     imageView.load(url: url)
-                } else {
-                    imageView.image = nil
                 }
                 titleView.text = event.name
                 interestedView.text = "Interested: " + String(event.rsvpUsers.count)

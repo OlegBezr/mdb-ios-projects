@@ -32,7 +32,7 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(didTapSignOut(_:)))
-        navigationItem.title = "Events"
+        navigationItem.title = "MDB Events"
         view.addSubview(collectionView)
         
         collectionView.dataSource = self
@@ -45,14 +45,11 @@ class FeedVC: UIViewController {
             ),
         ])
         
-        FIRDatabaseRequest.shared.getEvents { events in
-            self.events = events.sorted(by: { a, b in
-                return a.startDate > b.startDate
-            })
-            print(self.events[0].name)
-            print(self.events.count)
-            self.collectionView.reloadData()
-            print(self.collectionView.visibleCells.count)
+        FIRDatabaseRequest.shared.listenToEvents { newEvents in
+           self.events = newEvents.sorted(by: { a, b in
+               return a.startDate > b.startDate
+           })
+           self.collectionView.reloadData()
         }
     }
     
