@@ -17,28 +17,13 @@ class FeedVC: UIViewController {
     private var events: [SOCEvent] = [
     ]
     
-    private let signOutButton: UIButton = {
-        var filled = UIButton.Configuration.filled()
-        
-        let btn = LoadingButton()
-        btn.layer.backgroundColor = UIColor.primary.cgColor
-        btn.setTitle("Sig  Out", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        btn.isUserInteractionEnabled = true
-        
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        
-        return btn
-    }()
-    
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 50, right: 0)
         collectionView.backgroundColor = .clear
         collectionView.register(SOCEventCell.self, forCellWithReuseIdentifier: SOCEventCell.reuseIdentifier)
         return collectionView
@@ -46,22 +31,17 @@ class FeedVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(didTapSignOut(_:)))
+        navigationItem.title = "Events"
         view.addSubview(collectionView)
-        view.addSubview(signOutButton)
         
         collectionView.dataSource = self
         collectionView.delegate = self
         
         NSLayoutConstraint.activate([
-            signOutButton.topAnchor.constraint(
+            collectionView.topAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.topAnchor,
                 constant: 0
-            ),
-            signOutButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1 / 2),
-            signOutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            collectionView.topAnchor.constraint(
-                equalTo: signOutButton.bottomAnchor,
-                constant: 20
             ),
         ])
         
@@ -74,14 +54,11 @@ class FeedVC: UIViewController {
             self.collectionView.reloadData()
             print(self.collectionView.visibleCells.count)
         }
-        
-        signOutButton.layer.cornerRadius = signOutButtonHeight / 2
-        signOutButton.addTarget(self, action: #selector(didTapSignOut(_:)), for: .touchUpInside)
     }
     
     override func viewDidLayoutSubviews() {
         collectionView.frame = view.bounds.inset(
-            by: UIEdgeInsets(top: view.safeAreaInsets.top + signOutButtonHeight + 20, left: 20, bottom: 0, right: 20)
+            by: UIEdgeInsets(top: view.safeAreaInsets.top, left: 20, bottom: 0, right: 20)
         )
     }
     
@@ -115,6 +92,8 @@ extension FeedVC: UICollectionViewDataSource {
 
 extension FeedVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.bounds.width / 2 + 40, height: 200)
+        let width = view.bounds.width / 2 + 40
+        let height = width * 1.5
+        return CGSize(width: width, height: height)
     }
 }

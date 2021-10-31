@@ -209,11 +209,16 @@ extension UIImage {
 
 extension UIImageView {
     func load(url: URL) {
+        self.tag += 1
+        let requestTag = self.tag
+        
         DispatchQueue.global().async { [weak self] in
             if let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        self?.image = image
+                        if self?.tag == requestTag {
+                            self?.image = image
+                        }
                     }
                 }
             }

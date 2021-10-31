@@ -13,30 +13,37 @@ class SOCEventCell: UICollectionViewCell {
     
     var creator: SOCUser? {
         didSet {
-            titleView.text = event!.name + "\nby " + creator!.username
+            if let event = event, let creator = creator {
+                titleView.text = event.name + "\nby " + creator.username
+            }
         }
     }
     
     var event: SOCEvent? {
         didSet {
-            print("SOCEventCell created!")
-            if let photoUrl = event?.photoURL {
-                imageView.load(url: URL(string: photoUrl)!)
-            }
-            titleView.text = event?.name
-            interestedView.text = "Interested: " + String(event!.rsvpUsers.count)
-            
-            FIRDatabaseRequest.shared.getUserById(
-                userId: event!.creator,
-                completion: { user in
-                    self.creator = user
+            if let event = event {
+                if let url = URL(string: event.photoURL) {
+                    imageView.load(url: url)
+                } else {
+                    imageView.image = nil
                 }
-            )
+                titleView.text = event.name
+                interestedView.text = "Interested: " + String(event.rsvpUsers.count)
+                
+                FIRDatabaseRequest.shared.getUserById(
+                    userId: event.creator,
+                    completion: { user in
+                        self.creator = user
+                    }
+                )
+            }
         }
     }
     
     private let imageView: UIImageView = {
         let iv = UIImageView()
+        iv.image = nil
+        iv.backgroundColor = .lightGray
         iv.tintColor = .white
         iv.contentMode = .scaleAspectFit
         
@@ -46,7 +53,7 @@ class SOCEventCell: UICollectionViewCell {
     
     private let titleView: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14)
+        label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
         label.numberOfLines = 2
         label.text = "Check"
@@ -58,7 +65,7 @@ class SOCEventCell: UICollectionViewCell {
     
     private let interestedView: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14)
+        label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
         label.numberOfLines = 2
         label.text = "Check"
@@ -80,7 +87,7 @@ class SOCEventCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 1 / 2),
             titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

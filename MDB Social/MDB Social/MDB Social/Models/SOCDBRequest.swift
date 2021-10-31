@@ -37,11 +37,14 @@ class FIRDatabaseRequest {
         let query = db.collection("events")
         
         query.getDocuments { snapshot, error in
-            for doc in snapshot!.documents {
-                do {
-                    let event = try doc.data(as: SOCEvent.self)
-                    events.append(event!)
-                } catch {}
+            if let snapshot = snapshot {
+                for doc in snapshot.documents {
+                    do {
+                        if let event = try doc.data(as: SOCEvent.self) {
+                            events.append(event)
+                        }
+                    } catch {}
+                }
             }
             completion?(events)
         }
@@ -52,8 +55,9 @@ class FIRDatabaseRequest {
         
         query.getDocument { snapshot, error in
             do {
-                let user = try snapshot?.data(as: SOCUser.self)
-                completion?(user!)
+                if let user = try snapshot?.data(as: SOCUser.self) {
+                    completion?(user)
+                }
             } catch {}
         }
     }
