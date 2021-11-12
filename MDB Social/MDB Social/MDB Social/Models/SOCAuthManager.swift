@@ -153,6 +153,7 @@ class SOCAuthManager {
     }
     
     private func unlinkCurrentUser() {
+        FIRDatabaseRequest.shared.stopListeningToEvents()
         userListener?.remove()
         currentUser = nil
     }

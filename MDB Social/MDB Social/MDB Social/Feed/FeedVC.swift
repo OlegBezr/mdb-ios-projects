@@ -32,8 +32,11 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(didTapSignOut(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New Event", style: .plain, target: self, action: #selector(didTapNewEvent(_:)))
         navigationItem.title = "MDB Events"
         view.addSubview(collectionView)
+        
+        collectionView.backgroundColor = .lightGray.withAlphaComponent(0.3)
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -55,7 +58,7 @@ class FeedVC: UIViewController {
     
     override func viewDidLayoutSubviews() {
         collectionView.frame = view.bounds.inset(
-            by: UIEdgeInsets(top: view.safeAreaInsets.top, left: 20, bottom: 0, right: 20)
+            by: UIEdgeInsets(top: view.safeAreaInsets.top, left: 0, bottom: 0, right: 0)
         )
     }
     
@@ -69,6 +72,12 @@ class FeedVC: UIViewController {
             let duration: TimeInterval = 0.3
             UIView.transition(with: window, duration: duration, options: options, animations: {}, completion: nil)
         }
+    }
+    
+    @objc func didTapNewEvent(_ sender: UIButton) {
+        let vc = NewEventVC()
+        vc.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -92,5 +101,13 @@ extension FeedVC: UICollectionViewDelegateFlowLayout {
         let width = view.bounds.width / 2 + 40
         let height = width * 1.5
         return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let socEvent = events[indexPath.item]
+        if let id = socEvent.id {
+            let vc = SOCEventVC(eventId: id)
+            present(vc, animated: true, completion: nil)
+        }
     }
 }

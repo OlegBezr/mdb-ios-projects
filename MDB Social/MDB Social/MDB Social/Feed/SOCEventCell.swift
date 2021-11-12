@@ -42,8 +42,8 @@ class SOCEventCell: UICollectionViewCell {
     private let imageView: UIImageView = {
         let iv = UIImageView()
         iv.image = nil
-        iv.backgroundColor = .lightGray
-        iv.tintColor = .white
+        iv.backgroundColor = .primary
+        iv.tintColor = .black
         iv.contentMode = .scaleAspectFit
         
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -52,11 +52,11 @@ class SOCEventCell: UICollectionViewCell {
     
     private let titleView: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 20)
         label.textAlignment = .center
         label.numberOfLines = 2
         label.text = "Check"
-        label.textColor = .white
+        label.textColor = .black
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -68,7 +68,7 @@ class SOCEventCell: UICollectionViewCell {
         label.textAlignment = .center
         label.numberOfLines = 2
         label.text = "Check"
-        label.textColor = .white
+        label.textColor = .black
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -77,7 +77,7 @@ class SOCEventCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = .primary
+        backgroundColor = .white
 //        contentView.backgroundColor = #colorLiteral(red: 0.09803921569, green: 0.1058823529, blue: 0.1098039216, alpha: 1)
         
         contentView.addSubview(imageView)
@@ -91,7 +91,7 @@ class SOCEventCell: UICollectionViewCell {
             imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 1 / 2),
             titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            titleView.bottomAnchor.constraint(equalTo: interestedView.topAnchor),
+            titleView.bottomAnchor.constraint(equalTo: interestedView.topAnchor, constant: -5),
             interestedView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             interestedView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             interestedView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
