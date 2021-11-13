@@ -39,8 +39,6 @@ class FIRDatabaseRequest {
     }
     
     func createEvent(_ event: SOCEvent, completion: (()->Void)?) {
-        guard let id = event.id else { return }
-        
         do {
             try db.collection("events").addDocument(from: event)
             completion?()
@@ -50,10 +48,8 @@ class FIRDatabaseRequest {
     func deleteEvent(_ event: SOCEvent, completion: (()->Void)?) {
         guard let id = event.id else { return }
         
-        do {
-            try db.collection("events").document(id).delete()
-            completion?()
-        } catch { }
+        db.collection("events").document(id).delete()
+        completion?()
     }
     
     func getEvents(completion: (([SOCEvent])->Void)?) {
@@ -132,10 +128,12 @@ class FIRDatabaseRequest {
         print("\nUPLOAD STARTED\n")
         let storageRef = storage.reference()
         let timeStamp = NSDate().timeIntervalSince1970
-        let fileName = String(format:"%02X", Int(timeStamp * 1000000)) + ".jpeg"
-        let imageRef = storageRef.child("images/" + fileName)
+        let fileName = "image" + String(format:"%02X", Int(timeStamp * 1000000)) + ".jpeg"
+        let imageRef = storageRef.child(fileName)
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpeg"
         
-        let uploadTask = imageRef.putData(image, metadata: nil) { (metadata, error) in
+        let uploadTask = imageRef.putData(image, metadata: metadata) { (metadata, error) in
             guard let metadata = metadata else {
                 print("\nERROR\n")
                 print(error)

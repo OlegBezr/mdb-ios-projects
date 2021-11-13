@@ -98,7 +98,7 @@ extension FeedVC: UICollectionViewDataSource {
 
 extension FeedVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = view.bounds.width / 2 + 40
+        let width = view.bounds.width / 1.5
         let height = width * 1.5
         return CGSize(width: width, height: height)
     }

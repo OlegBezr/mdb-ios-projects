@@ -162,15 +162,15 @@ class NewEventVC: UIViewController {
         print("\n\nCOMPRESSED IMAGE\n\n")
         let time = Timestamp(date: datePicker.date)
         let event = SOCEvent(name: name, description: description, photoURL: "lol", startTimeStamp: time, creator: uid, rsvpUsers: [])
-        FIRDatabaseRequest.shared.createEvent(event) {
-            self.navigationController?.popViewController(animated: true)
-        }
-//        FIRDatabaseRequest.shared.uploadImage(image: comprImgData) { url in
-//            let event = SOCEvent(name: name, description: description, photoURL: url, startTimeStamp: time, creator: uid, rsvpUsers: [])
-//            FIRDatabaseRequest.shared.createEvent(event) {
-//                self.navigationController?.popViewController(animated: true)
-//            }
+//        FIRDatabaseRequest.shared.createEvent(event) {
+//            self.navigationController?.popViewController(animated: true)
 //        }
+        FIRDatabaseRequest.shared.uploadImage(image: comprImgData) { url in
+            let event = SOCEvent(name: name, description: description, photoURL: url, startTimeStamp: time, creator: uid, rsvpUsers: [])
+            FIRDatabaseRequest.shared.createEvent(event) {
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
     }
     
     private func showErrorBanner(withTitle title: String, subtitle: String? = nil) {

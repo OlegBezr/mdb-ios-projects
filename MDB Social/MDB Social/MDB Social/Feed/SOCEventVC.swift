@@ -87,7 +87,7 @@ class SOCEventVC: UIViewController  {
     }()
     private let titleView: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 28)
+        label.font = .systemFont(ofSize: 24)
         label.textColor = .black
         label.textAlignment = .center
         label.numberOfLines = 2
@@ -101,7 +101,7 @@ class SOCEventVC: UIViewController  {
 //        label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .left
         label.textColor = .black
-        label.numberOfLines = 6
+        label.numberOfLines = 5
         
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

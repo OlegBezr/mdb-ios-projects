@@ -13,9 +13,7 @@ class SOCEventCell: UICollectionViewCell {
     
     var creator: SOCUser? {
         didSet {
-            if let event = event, let creator = creator {
-                titleView.text = event.name + "\nby " + creator.username
-            }
+            setTitle()
         }
     }
     
@@ -64,7 +62,7 @@ class SOCEventCell: UICollectionViewCell {
     
     private let interestedView: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 18)
         label.textAlignment = .center
         label.numberOfLines = 2
         label.text = "Check"
@@ -85,17 +83,38 @@ class SOCEventCell: UICollectionViewCell {
         contentView.addSubview(interestedView)
         
         NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 1 / 2),
-            titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             titleView.bottomAnchor.constraint(equalTo: interestedView.topAnchor, constant: -5),
-            interestedView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            interestedView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            interestedView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            interestedView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             interestedView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
+        
+        imageView.layer.cornerRadius = 10
+    }
+    
+    func setTitle() {
+        let name = event!.name
+        let attrName = NSMutableAttributedString(string: name)
+        let byString = "\nby "
+        let attrByString = NSMutableAttributedString(string: byString)
+        let creatorName = creator!.username
+        let attrCreator = NSMutableAttributedString(string: creatorName)
+        attrCreator.addAttribute(
+            .foregroundColor,
+            value: UIColor.primary,
+            range: NSRange(location: 0, length: creatorName.count)
+        )
+        let finalAttrString = NSMutableAttributedString()
+        finalAttrString.append(attrName)
+        finalAttrString.append(attrByString)
+        finalAttrString.append(attrCreator)
+        titleView.attributedText = finalAttrString
     }
     
     required init?(coder: NSCoder) {
